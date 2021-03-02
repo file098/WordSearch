@@ -28,7 +28,7 @@ int prepend(tlist *pl, char *elem)
     }
 }
 
-int append(tlist *pl, int elem) 
+int append(tlist *pl, char* elem) 
 { 
     if (*pl == NULL)
         return prepend(pl, elem);
@@ -42,7 +42,7 @@ int longestWord(char *str)
     int max = 0;
 
     while((*str)!='\0'){
-       if((*str) >= 'a' && (*str) <='z'|| (*str)>='A'&& (*str)<='Z'){
+       if(((*str) >= 'a' && (*str) <='z') || ((*str)>='A' && (*str)<='Z')){
            count++;
             if(count > max)
                 max = count;
@@ -55,19 +55,36 @@ int longestWord(char *str)
     return max;
 }
 
-void string2List(char *str)
+/* FIXME: */
+tlist string2List(char *str)
 {
-    int i,j;
-    char *buff;
+    int i = 0;
     tlist new = (tlist)malloc(sizeof(struct cell));
     while((*str) != '\0'){
+        char *buff = (char*)malloc(sizeof(char) * longestWord(str)+1);
+        if(((*str) >= 'a' && (*str) <='z') || ((*str)>='A' && (*str)<='Z')){
+            buff[i] = *str;
+            str++;
+            i++;
+        }
+        else {
+            append(&new,buff);
+            i = 0;
+            str++;
+        }
+    }
+    return new;
+}
 
+void printList(tlist l){
+    if(l){
+        printf("%s\n", l->string);
+        printList(l->next);
     }
 }
 
 int main()
 {
-    int i, words;
     char *str = (char*)malloc(sizeof(char) * MAXLENGTH);
 
     printf("Insert the words to add in the WordSearch\nNo more than 200 chars ;)\n");
@@ -78,6 +95,8 @@ int main()
         printf("Hey! I told you no more than %d char >:(\n",MAXLENGTH);
         return 1;
     }
+
+    printList(string2List(str));
 
     return 0;
 }
