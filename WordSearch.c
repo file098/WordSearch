@@ -2,46 +2,82 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* createMatrix(int row, int column);
+#define MAXLENGTH 50
 
-char *stringToWords(char *str, int dim);
+typedef struct cell {
+    char *string;
+    struct cell *next;
+} *tlist;
 
-void populate(char *matrix, char *string);
+int prepend(tlist *pl, char *elem)
+{
+    if (*pl == NULL)
+        return prepend(pl, elem);
+    else{
+        tlist pc = *pl;
+        while (pc->next != NULL)
+            pc = pc->next;
+        pc->next = (tlist)malloc(sizeof(struct cell)); 
+        if (pc->next != NULL) {
+            pc->next->string = elem;
+            pc->next->next = NULL;
+            return 1;
+        }
+        else
+            return 0;
+    }
+}
 
-int longestWord(char *str, int dim){
-    int i;
+int append(tlist *pl, int elem) 
+{ 
+    if (*pl == NULL)
+        return prepend(pl, elem);
+    else
+        return append(&((*pl)->next), elem); 
+}
+
+int longestWord(char *str)
+{
     int count = 0;
     int max = 0;
 
-    for(i=0; i<strlen(str); i++){
-        if(str[i] == ' '){
+    while((*str)!='\0'){
+       if((*str) >= 'a' && (*str) <='z'|| (*str)>='A'&& (*str)<='Z'){
+           count++;
             if(count > max)
                 max = count;
-            count = 0;
-            printf("spazio\n");
         }
-        else
-            count++;
-            printf("parola\n");
+        else{
+            count=0;
+        }
+        str++;
     }
     return max;
 }
 
+void string2List(char *str)
+{
+    int i,j;
+    char *buff;
+    tlist new = (tlist)malloc(sizeof(struct cell));
+    while((*str) != '\0'){
 
-int main(){
+    }
+}
+
+int main()
+{
     int i, words;
-    int maxlength = 50; 
-    char *str = (char*)malloc(sizeof(char) * maxlength);
+    char *str = (char*)malloc(sizeof(char) * MAXLENGTH);
 
     printf("Insert the words to add in the WordSearch\nNo more than 200 chars ;)\n");
     printf("Insert words here:");
-    scanf("%s",str);
+    scanf("%[^\n]%*c",str);
 
-    if(strlen(str) >= maxlength){
-        printf("Hey! I told you no more than %d char >:(\n",maxlength);
+    if(strlen(str) >= MAXLENGTH){
+        printf("Hey! I told you no more than %d char >:(\n",MAXLENGTH);
         return 1;
     }
 
-    printf("longest:%d\n", longestWord(str,strlen(str)));
     return 0;
 }
